@@ -1,151 +1,175 @@
 <!doctype html>
 <html lang="en" data-bs-theme="light">
-    <head>
-        <title>Invitación a mis 15!</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <title>Invitación a mis 15!</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <!-- Bootstrap CSS v5.3.8 -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-            crossorigin="anonymous"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Imperial+Script&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Imperial+Script&family=Monsieur+La+Doulaise&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-        <link href="assets/css/styles.css" rel="stylesheet" />
-    </head>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous"/>
 
-    <body>
-        <main>
-            <div class="container my-5">
-                <div class="row">
-                    <div class="col-12">
-                        <img src="assets/img/Card.png" class="presentationCard d-block mx-auto">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <img src="assets/img/cardOpen.png" class="openCard d-block mx-auto">
-                    </div>
-                </div>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Imperial+Script&family=Monsieur+La+Doulaise&family=Roboto:ital,wght@0,100..900;1,100..900&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500&display=swap"
+          rel="stylesheet">
+
+    <link href="assets/css/styles.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <main>
+
+      <!-- ── Presentation card ──────────────────────────────────── -->
+      <div class="container my-5">
+        <div class="row">
+          <div class="col-12">
+            <img src="assets/img/Card.png" class="presentationCard d-block mx-auto">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 reveal reveal-delay-1">
+            <img src="assets/img/cardOpen.png" class="openCard d-block mx-auto">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Music Player ───────────────────────────────────────── -->
+      <div class="container my-5 reveal reveal-delay-2">
+        <div style="display:flex; justify-content:center; padding:2rem 1rem; font-family:'Montserrat',sans-serif;">
+          <div class="player-wrap">
+
+            <p style="text-align:center; font-size:12px; letter-spacing:0.3em; color:#b8922a; text-transform:uppercase; margin:0 0 1.2rem;">
+              Dale play para escuchar
+            </p>
+
+            <!-- Seek bar -->
+            <div style="position:relative; height:2px; background:#e8d9b0; margin-bottom:1.4rem; cursor:pointer;">
+              <div id="fill" style="height:100%; background:#c9a84c; width:0%; pointer-events:none; transition:width 0.1s linear;"></div>
+              <div id="thumb" style="position:absolute; top:50%; left:0%; transform:translate(-50%,-50%); width:13px; height:13px; border-radius:50%; background:#b8922a; pointer-events:none;"></div>
+              <input type="range" id="seek" min="0" max="1000" value="0"
+                style="position:absolute; width:100%; height:100%; opacity:0; cursor:pointer; top:0; left:0; margin:0;">
             </div>
-            <div class="container my-5">
-                <!-- Music Player -->
-                <div style="display:flex; justify-content:center; padding: 2rem 1rem; font-family:'Montserrat',sans-serif;">
-                    <div style="width:100%; max-width:420px; background:#f5f0e8; padding:1.6rem 2rem 1.8rem;">
 
-                        <p style="text-align:center; font-size:12px; letter-spacing:0.3em; color:#b8922a; text-transform:uppercase; margin:0 0 1.2rem;">
-                        Dale play para escuchar
-                        </p>
+            <!-- Controls -->
+            <div style="display:flex; align-items:center; justify-content:center; gap:2.2rem;">
+              <button onclick="audio.currentTime=0;updateBar();" style="background:none;border:none;cursor:pointer;color:#b8922a;transition:transform 0.2s ease;" onmouseenter="this.style.transform='scale(1.15)'" onmouseleave="this.style.transform='scale(1)'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
+                </svg>
+              </button>
 
-                        <!-- Seek bar -->
-                        <div style="position:relative; height:2px; background:#c9a84c; margin-bottom:1.4rem; cursor:pointer;">
-                        <div id="fill" style="height:100%; background:#c9a84c; width:0%; pointer-events:none;"></div>
-                        <div id="thumb" style="position:absolute; top:50%; left:0%; transform:translate(-50%,-50%); width:13px; height:13px; border-radius:50%; background:#b8922a; pointer-events:none;"></div>
-                        <input type="range" id="seek" min="0" max="1000" value="0"
-                            style="position:absolute; width:100%; height:100%; opacity:0; cursor:pointer; top:0; left:0; margin:0;">
-                        </div>
+              <button id="play-btn" onclick="togglePlay()"
+                style="background:none; border:1.5px solid #b8922a; cursor:pointer; color:#b8922a; width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                <svg id="play-icon" width="82" height="82" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+                </svg>
+              </button>
 
-                        <!-- Controls -->
-                        <div style="display:flex; align-items:center; justify-content:center; gap:2.2rem;">
-                        <button onclick="audio.currentTime=0;updateBar();" style="background:none;border:none;cursor:pointer;color:#b8922a;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                            <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
-                            </svg>
-                        </button>
-
-                        <button id="play-btn" onclick="togglePlay()"
-                            style="background:none; border:1.5px solid #b8922a; cursor:pointer; color:#b8922a; width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                            <svg id="play-icon" width="82" height="82" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
-                            </svg>
-                        </button>
-
-                        <button onclick="audio.currentTime=audio.duration||0;" style="background:none;border:none;cursor:pointer;color:#b8922a;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                            <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
-                            </svg>
-                        </button>
-                        </div>
-
-                        <!-- 👇 Change this to your actual audio file path -->
-                        <audio id="audio" src="assets/audio/song.mp3" preload="auto"></audio>
-                    </div>
-                </div>
+              <button onclick="audio.currentTime=audio.duration||0;" style="background:none;border:none;cursor:pointer;color:#b8922a;transition:transform 0.2s ease;" onmouseenter="this.style.transform='scale(1.15)'" onmouseleave="this.style.transform='scale(1)'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
+                </svg>
+              </button>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <a href="https://maps.google.com/?q=Finca+Los+Delfines+Girardota+Vereda+Juan+Cojo" target="_blank">
-                        <img src="assets/img/photoAlbum.png" class="openCard d-block mx-auto">
-                    </a>
-                </div>
+
+            <audio id="audio" src="assets/audio/song.mp3" preload="auto"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Photo album / map card ─────────────────────────────── -->
+      <div class="row reveal reveal-delay-1">
+        <div class="col-12">
+          <a href="https://maps.google.com/?q=Finca+Los+Delfines+Girardota+Vereda+Juan+Cojo" target="_blank">
+            <img src="assets/img/photoAlbum.png" class="openCard d-block mx-auto">
+          </a>
+        </div>
+      </div>
+
+      <!-- ── Final card ─────────────────────────────────────────── -->
+      <div class="row reveal reveal-delay-2">
+        <div class="col-12">
+          <img src="assets/img/finalCard.png" class="finalCard d-block mx-auto">
+        </div>
+      </div>
+
+      <!-- ── Countdown ──────────────────────────────────────────── -->
+      <div class="countdown-section reveal">
+        <p style="font-family:'Imperial Script',cursive; font-size:70px; color:#b8922a; margin:0 0 1rem; line-height:1;">Faltan</p>
+
+        <div style="display:flex; justify-content:center; gap:2.5rem; margin-bottom:1.2rem;">
+          <div style="text-align:center;">
+            <span id="days"  class="countdown-digit">--</span>
+            <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Días</span>
+          </div>
+          <div style="text-align:center;">
+            <span id="hours" class="countdown-digit">--</span>
+            <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Horas</span>
+          </div>
+          <div style="text-align:center;">
+            <span id="mins"  class="countdown-digit">--</span>
+            <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Min</span>
+          </div>
+          <div style="text-align:center;">
+            <span id="secs"  class="countdown-digit">--</span>
+            <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Seg</span>
+          </div>
+        </div>
+
+        <p style="font-family:'Roboto',sans-serif; font-size:30px; font-weight:400; letter-spacing:0.1em; color:#b8922a; text-transform:uppercase; margin:0;">
+          Para mi gran día
+        </p>
+      </div>
+
+      <!-- ── RSVP Form ──────────────────────────────────────────── -->
+      <div class="row">
+        <div class="col-12">
+          <div class="formCard-wrapper d-block mx-auto mt-5 reveal">
+            <img src="assets/img/formCard.png" class="formCard w-100">
+            <div class="form-overlay">
+
+              <p class="form-title">Confirmación de asistencia</p>
+
+              <label class="field-label">Tu nombre</label>
+              <input type="text" class="name-input" id="guestName" placeholder="">
+
+              <span class="question-label">¿Podrás acompañarme en mi día?</span>
+              <button class="choice-btn" id="btn-si" onclick="selectOption('si')">Sí, cuenta conmigo!</button>
+              <button class="choice-btn" id="btn-no" onclick="selectOption('no')">No podré asistir.</button>
+
+              <div class="form-divider"></div>
+              <button class="save-btn" onclick="guardarRespuesta()">Guardamos tu respuesta.</button>
+
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <img src="assets/img/finalCard.png" class="finalCard d-block mx-auto">
-                </div>
-            </div>
-            <div style="text-align:center; padding:2.5rem 1rem 2rem; background:#f8f5f0;">
-                <p style="font-family:'Imperial Script',cursive; font-size:70px; color:#b8922a; margin:0 0 1rem; line-height:1;">Faltan</p>
+          </div>
+        </div>
+      </div>
 
-                <div style="display:flex; justify-content:center; gap:2.5rem; margin-bottom:1.2rem;">
-                    <div style="text-align:center;">
-                    <span id="days" style="font-family:'Montserrat',sans-serif; font-size:52px; font-weight:700; color:#b8922a; display:block;">--</span>
-                    <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Días</span>
-                    </div>
-                    <div style="text-align:center;">
-                    <span id="hours" style="font-family:'Montserrat',sans-serif; font-size:52px; font-weight:700; color:#b8922a; display:block;">--</span>
-                    <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Horas</span>
-                    </div>
-                    <div style="text-align:center;">
-                    <span id="mins" style="font-family:'Montserrat',sans-serif; font-size:52px; font-weight:700; color:#b8922a; display:block;">--</span>
-                    <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Min</span>
-                    </div>
-                    <div style="text-align:center;">
-                    <span id="secs" style="font-family:'Montserrat',sans-serif; font-size:52px; font-weight:700; color:#b8922a; display:block;">--</span>
-                    <span style="font-family:'Montserrat',sans-serif; font-size:12px; color:#b8922a; letter-spacing:0.15em; text-transform:uppercase;">Seg</span>
-                    </div>
-                </div>
+    </main>
+    <footer></footer>
 
-                <p style="font-family:'Roboto',sans-serif; font-size:30px; font-weight:400; letter-spacing: 0.1em; color:#b8922a; text-transform:uppercase; margin:0;">Para mi gran día</p>
-            </div>    
-            <div class="row">
-                <div class="col-12">
-                    <div class="formCard-wrapper d-block mx-auto mt-5">
-                        <img src="assets/img/formCard.png" class="formCard w-100">
-                        <div class="form-overlay">
+    <!-- ── Confirmation Modal ─────────────────────────────────── -->
+    <div class="modal-backdrop-custom" id="confirmModal">
+      <div class="modal-box">
+        <!-- Confetti container -->
+        <div id="confetti-container" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:inherit;"></div>
 
-                            <p class="form-title">Confirmación de asistencia</p>
+        <div class="modal-icon" id="modal-emoji">🌸</div>
+        <p class="modal-title">¡Gracias!</p>
+        <div class="modal-divider"></div>
+        <p class="modal-message" id="modal-message"></p>
+        <button class="modal-close-btn" onclick="closeModal()">Cerrar</button>
+      </div>
+    </div>
 
-                            <label class="field-label">Tu nombre</label>
-                            <input type="text" class="name-input" id="guestName" placeholder="">
-
-                            <span class="question-label">¿Podrás acompañarme en mi día?</span>
-                            <button class="choice-btn" id="btn-si" onclick="selectOption('si')">Sí, cuenta conmigo!</button>
-                            <button class="choice-btn" id="btn-no" onclick="selectOption('no')">No podré asistir.</button>
-
-                            <div class="form-divider"></div>
-                            <button class="save-btn" onclick="guardarRespuesta()">Guardamos tu respuesta.</button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>   
-        </main>
-        <footer>
-           
-        </footer>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-            crossorigin="anonymous"
-        ></script>
-        <script src="assets/scripts/scripts.js"></script>
-    </body>
+            crossorigin="anonymous"></script>
+    <script src="assets/scripts/scripts.js"></script>
+  </body>
 </html>

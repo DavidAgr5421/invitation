@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Panel de Confirmaciones — Mis 15</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Imperial+Script&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:        #b8922a;
+      --gold-light:  #c9a84c;
+      --gold-pale:   #e8d9b0;
+      --cream:       #f8f5f0;
+      --cream-dark:  #f0ead8;
+      --brown-deep:  #5a3e10;
+      --brown-mid:   #7a5a1e;
+      --brown-soft:  #9a7a2e;
+      --shadow-gold: rgba(184,146,42,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--cream);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--brown-deep);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #faf6ed 0%, #f0e8d0 100%);
+      border-bottom: 1px solid var(--gold-pale);
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-script {
+      font-family: 'Imperial Script', cursive;
+      font-size: 56px;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+    }
+    .header-sub {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--brown-soft);
+      margin-top: 0.4rem;
+    }
+    .corner-ornament {
+      position: absolute;
+      width: 48px; height: 48px;
+      border-color: var(--gold-pale);
+      border-style: solid;
+      opacity: 0.6;
+    }
+    .corner-ornament.tl { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
+    .corner-ornament.tr { top: 14px; right: 14px; border-width: 1px 1px 0 0; }
+    .corner-ornament.bl { bottom: 14px; left: 14px; border-width: 0 0 1px 1px; }
+    .corner-ornament.br { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
+
+    /* ── Layout ── */
+    .page-body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Stat cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: linear-gradient(160deg, #fdfaf4 0%, #f5edda 100%);
+      border: 1px solid var(--gold-pale);
+      padding: 1.4rem 1.6rem;
+      text-align: center;
+    }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+    }
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brown-soft);
+      margin-top: 0.3rem;
+      display: block;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--gold-pale);
+      padding: 7px 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--brown-soft);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .filter-btn:hover { background: rgba(201,168,76,0.1); }
+    .filter-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff;
+    }
+    .search-wrap {
+      position: relative;
+    }
+    .search-input {
+      background: #fdfaf4;
+      border: 1px solid var(--gold-pale);
+      padding: 8px 14px 8px 36px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      color: var(--brown-deep);
+      width: 220px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 0 3px rgba(184,146,42,0.1);
+    }
+    .search-icon {
+      position: absolute;
+      left: 11px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold-light);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    /* ── Export ── */
+    .export-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      padding: 8px 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-transform: uppercase;
+    }
+    .export-btn:hover { background: var(--gold); color: #fff; }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: linear-gradient(160deg, #fdfaf4 0%, #f9f5eb 100%);
+      border: 1px solid var(--gold-pale);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      background: linear-gradient(to right, #f5edda, #efe5cc);
+      border-bottom: 1px solid var(--gold-pale);
+    }
+    thead th {
+      padding: 14px 20px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brown-soft);
+      font-weight: 500;
+      text-align: left;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(232,217,176,0.5);
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,76,0.05); }
+    tbody td {
+      padding: 14px 20px;
+      font-size: 13px;
+      color: var(--brown-mid);
+    }
+    .guest-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      color: var(--brown-deep);
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .badge-si {
+      background: rgba(184,146,42,0.12);
+      color: var(--brown-mid);
+      border: 1px solid var(--gold-pale);
+    }
+    .badge-no {
+      background: rgba(90,62,16,0.07);
+      color: var(--brown-soft);
+      border: 1px solid rgba(154,122,46,0.2);
+    }
+    .timestamp {
+      font-size: 11px;
+      color: var(--brown-soft);
+      opacity: 0.7;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .empty-icon {
+      font-family: 'Imperial Script', cursive;
+      font-size: 64px;
+      color: var(--gold-pale);
+      display: block;
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+    .empty-text {
+      font-size: 13px;
+      color: var(--brown-soft);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Delete btn ── */
+    .del-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gold-pale);
+      font-size: 16px;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .del-btn:hover { color: #c0392b; }
+
+    /* ── Divider ── */
+    .gold-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-pale), transparent);
+      margin: 2rem 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .header-script { font-size: 40px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .search-input { width: 100%; }
+      .toolbar { flex-direction: column; align-items: flex-start; }
+      thead th:nth-child(3), tbody td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="corner-ornament tl"></div>
+    <div class="corner-ornament tr"></div>
+    <div class="corner-ornament bl"></div>
+    <div class="corner-ornament br"></div>
+    <span class="header-script">Confirmaciones</span>
+    <p class="header-sub">Panel de administración · Mis 15 años</p>
+  </header>
+
+  <div class="page-body">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-number" id="stat-total">0</span>
+        <span class="stat-label">Total respuestas</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-si">0</span>
+        <span class="stat-label">Confirmados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-no">0</span>
+        <span class="stat-label">No asisten</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-pct">—</span>
+        <span class="stat-label">% asistencia</span>
+      </div>
+    </div>
+
+    <div class="gold-line"></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Todos</button>
+        <button class="filter-btn" data-filter="si" onclick="setFilter('si')">Confirmados</button>
+        <button class="filter-btn" data-filter="no" onclick="setFilter('no')">No asisten</button>
+      </div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <div class="search-wrap">
+          <span class="search-icon">&#128269;</span>
+          <input type="text" class="search-input" id="search" placeholder="Buscar nombre..." oninput="renderTable()">
+        </div>
+        <button class="export-btn" onclick="exportCSV()">Exportar CSV</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Respuesta</th>
+            <th>Fecha y hora</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rsvp-tbody"></tbody>
+      </table>
+      <div id="empty-state" class="empty-state" style="display:none;">
+        <span class="empty-icon">~</span>
+        <p class="empty-text">Aún no hay respuestas registradas.</p>
+      </div>
+    </div>
+
+    <p style="font-size:11px; color:var(--brown-soft); margin-top:1.2rem; letter-spacing:0.05em; text-align:right;">
+      Las respuestas se guardan localmente en este dispositivo.
+    </p>
+
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'rsvp_responses';
+
+    function getResponses() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveResponses(arr) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+
+    let currentFilter = 'all';
+
+    function setFilter(f) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === f);
+      });
+      renderTable();
+    }
+
+    function renderStats() {
+      const all = getResponses();
+      const si  = all.filter(r => r.option === 'si').length;
+      const no  = all.filter(r => r.option === 'no').length;
+      document.getElementById('stat-total').textContent = all.length;
+      document.getElementById('stat-si').textContent    = si;
+      document.getElementById('stat-no').textContent    = no;
+      document.getElementById('stat-pct').textContent   = all.length
+        ? Math.round((si / all.length) * 100) + '%' : '—';
+    }
+
+    function renderTable() {
+      const tbody   = document.getElementById('rsvp-tbody');
+      const empty   = document.getElementById('empty-state');
+      const query   = document.getElementById('search').value.trim().toLowerCase();
+      let   rows    = getResponses();
+
+      if (currentFilter !== 'all') rows = rows.filter(r => r.option === currentFilter);
+      if (query) rows = rows.filter(r => r.name.toLowerCase().includes(query));
+
+      tbody.innerHTML = '';
+
+      if (!rows.length) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      rows.slice().reverse().forEach((r, i) => {
+        const tr = document.createElement('tr');
+        const date = r.timestamp ? new Date(r.timestamp) : null;
+        const dateStr = date
+          ? date.toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' })
+            + ' · ' + date.toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' })
+          : '—';
+
+        tr.innerHTML = `
+          <td style="color:var(--brown-soft); font-size:12px;">${rows.length - i}</td>
+          <td><span class="guest-name">${escHtml(r.name)}</span></td>
+          <td>
+            <span class="badge badge-${r.option}">
+              ${r.option === 'si' ? '✓ Confirmado' : '✗ No asiste'}
+            </span>
+          </td>
+          <td><span class="timestamp">${dateStr}</span></td>
+          <td>
+            <button class="del-btn" onclick="deleteEntry('${r.id}')" title="Eliminar">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function deleteEntry(id) {
+      if (!confirm('¿Eliminar esta respuesta?')) return;
+      const updated = getResponses().filter(r => r.id !== id);
+      saveResponses(updated);
+      renderStats();
+      renderTable();
+    }
+
+    function exportCSV() {
+      const rows = getResponses();
+      if (!rows.length) { alert('No hay respuestas para exportar.'); return; }
+      const header = ['Nombre', 'Respuesta', 'Fecha'];
+      const lines  = rows.map(r => {
+        const date = r.timestamp ? new Date(r.timestamp).toLocaleString('es-CO') : '';
+        return [r.name, r.option === 'si' ? 'Confirmado' : 'No asiste', date]
+          .map(v => `"${v}"`).join(',');
+      });
+      const csv  = [header.join(','), ...lines].join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'confirmaciones_15.csv';
+      a.click(); URL.revokeObjectURL(url);
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    renderStats();
+    renderTable();
+  </script>
+</body>
+</html>
