@@ -80,6 +80,21 @@
       padding: 2.5rem 1.5rem 4rem;
     }
 
+    /* ── Loading / error banner ── */
+    .status-banner {
+      text-align: center;
+      padding: 1rem;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--gold-pale);
+      color: var(--brown-soft);
+      background: #fdfaf4;
+      display: none;
+    }
+    .status-banner.visible { display: block; }
+    .status-banner.error   { color: #c0392b; border-color: #f5c6cb; background: #fff5f5; }
+
     /* ── Stat cards ── */
     .stats-grid {
       display: grid;
@@ -119,10 +134,7 @@
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
-    .filter-group {
-      display: flex;
-      gap: 0.5rem;
-    }
+    .filter-group { display: flex; gap: 0.5rem; }
     .filter-btn {
       background: transparent;
       border: 1px solid var(--gold-pale);
@@ -135,14 +147,8 @@
       transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
     .filter-btn:hover { background: rgba(201,168,76,0.1); }
-    .filter-btn.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #fff;
-    }
-    .search-wrap {
-      position: relative;
-    }
+    .filter-btn.active { background: var(--gold); border-color: var(--gold); color: #fff; }
+    .search-wrap { position: relative; }
     .search-input {
       background: #fdfaf4;
       border: 1px solid var(--gold-pale);
@@ -166,8 +172,6 @@
       font-size: 14px;
       pointer-events: none;
     }
-
-    /* ── Export ── */
     .export-btn {
       background: transparent;
       border: 1px solid var(--gold);
@@ -181,6 +185,18 @@
       text-transform: uppercase;
     }
     .export-btn:hover { background: var(--gold); color: #fff; }
+    .refresh-btn {
+      background: transparent;
+      border: 1px solid var(--gold-pale);
+      padding: 8px 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--brown-soft);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .refresh-btn:hover { background: rgba(201,168,76,0.1); }
 
     /* ── Table ── */
     .table-wrap {
@@ -188,10 +204,7 @@
       border: 1px solid var(--gold-pale);
       overflow: hidden;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    table { width: 100%; border-collapse: collapse; }
     thead {
       background: linear-gradient(to right, #f5edda, #efe5cc);
       border-bottom: 1px solid var(--gold-pale);
@@ -211,11 +224,7 @@
     }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(201,168,76,0.05); }
-    tbody td {
-      padding: 14px 20px;
-      font-size: 13px;
-      color: var(--brown-mid);
-    }
+    tbody td { padding: 14px 20px; font-size: 13px; color: var(--brown-mid); }
     .guest-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: 16px;
@@ -240,17 +249,8 @@
       color: var(--brown-soft);
       border: 1px solid rgba(154,122,46,0.2);
     }
-    .timestamp {
-      font-size: 11px;
-      color: var(--brown-soft);
-      opacity: 0.7;
-    }
-
-    /* ── Empty state ── */
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-    }
+    .timestamp { font-size: 11px; color: var(--brown-soft); opacity: 0.7; }
+    .empty-state { text-align: center; padding: 4rem 2rem; }
     .empty-icon {
       font-family: 'Imperial Script', cursive;
       font-size: 64px;
@@ -259,13 +259,7 @@
       margin-bottom: 1rem;
       line-height: 1;
     }
-    .empty-text {
-      font-size: 13px;
-      color: var(--brown-soft);
-      letter-spacing: 0.05em;
-    }
-
-    /* ── Delete btn ── */
+    .empty-text { font-size: 13px; color: var(--brown-soft); letter-spacing: 0.05em; }
     .del-btn {
       background: none;
       border: none;
@@ -277,8 +271,6 @@
       transition: color 0.2s;
     }
     .del-btn:hover { color: #c0392b; }
-
-    /* ── Divider ── */
     .gold-line {
       width: 100%;
       height: 1px;
@@ -286,13 +278,12 @@
       margin: 2rem 0;
     }
 
-    /* ── Responsive ── */
     @media (max-width: 600px) {
       .header-script { font-size: 40px; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .search-input { width: 100%; }
       .toolbar { flex-direction: column; align-items: flex-start; }
-      thead th:nth-child(3), tbody td:nth-child(3) { display: none; }
+      thead th:nth-child(4), tbody td:nth-child(4) { display: none; }
     }
   </style>
 </head>
@@ -309,18 +300,20 @@
 
   <div class="page-body">
 
+    <div class="status-banner" id="status-banner">Cargando respuestas…</div>
+
     <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
-        <span class="stat-number" id="stat-total">0</span>
+        <span class="stat-number" id="stat-total">—</span>
         <span class="stat-label">Total respuestas</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number" id="stat-si">0</span>
+        <span class="stat-number" id="stat-si">—</span>
         <span class="stat-label">Confirmados</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number" id="stat-no">0</span>
+        <span class="stat-number" id="stat-no">—</span>
         <span class="stat-label">No asisten</span>
       </div>
       <div class="stat-card">
@@ -338,11 +331,12 @@
         <button class="filter-btn" data-filter="si" onclick="setFilter('si')">Confirmados</button>
         <button class="filter-btn" data-filter="no" onclick="setFilter('no')">No asisten</button>
       </div>
-      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
         <div class="search-wrap">
           <span class="search-icon">&#128269;</span>
-          <input type="text" class="search-input" id="search" placeholder="Buscar nombre..." oninput="renderTable()">
+          <input type="text" class="search-input" id="search" placeholder="Buscar nombre…" oninput="renderTable()">
         </div>
+        <button class="refresh-btn" onclick="loadData()">↻ Actualizar</button>
         <button class="export-btn" onclick="exportCSV()">Exportar CSV</button>
       </div>
     </div>
@@ -368,71 +362,116 @@
     </div>
 
     <p style="font-size:11px; color:var(--brown-soft); margin-top:1.2rem; letter-spacing:0.05em; text-align:right;">
-      Las respuestas se guardan localmente en este dispositivo.
+      Datos en tiempo real · Supabase
     </p>
 
   </div>
 
   <script>
-    const STORAGE_KEY = 'rsvp_responses';
+    // ── Supabase config — same values as in scripts.js ──────────────
+    const SUPABASE_URL = 'https://jczhsfcowjpfzonpkufz.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_DsLjXVM_ZqOxYVeVqI4X6A_U-QTgHof';
+    const TABLE        = 'rsvp_responses';
 
-    function getResponses() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch { return []; }
-    }
-
-    function saveResponses(arr) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-    }
-
+    let allRows       = [];
     let currentFilter = 'all';
+
+    // ── Fetch all rows from Supabase ─────────────────────────────────
+    async function loadData() {
+      showBanner('Cargando respuestas…', false);
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=timestamp.desc`,
+          {
+            headers: {
+              'apikey':        SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY,
+            },
+          }
+        );
+        if (!res.ok) throw new Error(await res.text());
+        allRows = await res.json();
+        hideBanner();
+        renderStats();
+        renderTable();
+      } catch (err) {
+        showBanner('Error al conectar con la base de datos. Verifica la configuración.', true);
+        console.error(err);
+      }
+    }
+
+    // ── Delete a row by id ────────────────────────────────────────────
+    async function deleteEntry(id) {
+      if (!confirm('¿Eliminar esta respuesta?')) return;
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`,
+          {
+            method:  'DELETE',
+            headers: {
+              'apikey':        SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY,
+            },
+          }
+        );
+        if (!res.ok) throw new Error(await res.text());
+        await loadData();
+      } catch (err) {
+        alert('No se pudo eliminar. Intenta de nuevo.');
+        console.error(err);
+      }
+    }
+
+    // ── UI helpers ───────────────────────────────────────────────────
+    function showBanner(msg, isError) {
+      const b = document.getElementById('status-banner');
+      b.textContent = msg;
+      b.className = 'status-banner visible' + (isError ? ' error' : '');
+    }
+    function hideBanner() {
+      document.getElementById('status-banner').className = 'status-banner';
+    }
 
     function setFilter(f) {
       currentFilter = f;
-      document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.filter === f);
-      });
+      document.querySelectorAll('.filter-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.filter === f)
+      );
       renderTable();
     }
 
     function renderStats() {
-      const all = getResponses();
-      const si  = all.filter(r => r.option === 'si').length;
-      const no  = all.filter(r => r.option === 'no').length;
-      document.getElementById('stat-total').textContent = all.length;
+      const si = allRows.filter(r => r.option === 'si').length;
+      const no = allRows.filter(r => r.option === 'no').length;
+      document.getElementById('stat-total').textContent = allRows.length;
       document.getElementById('stat-si').textContent    = si;
       document.getElementById('stat-no').textContent    = no;
-      document.getElementById('stat-pct').textContent   = all.length
-        ? Math.round((si / all.length) * 100) + '%' : '—';
+      document.getElementById('stat-pct').textContent   = allRows.length
+        ? Math.round((si / allRows.length) * 100) + '%' : '—';
     }
 
     function renderTable() {
-      const tbody   = document.getElementById('rsvp-tbody');
-      const empty   = document.getElementById('empty-state');
-      const query   = document.getElementById('search').value.trim().toLowerCase();
-      let   rows    = getResponses();
+      const tbody = document.getElementById('rsvp-tbody');
+      const empty = document.getElementById('empty-state');
+      const query = document.getElementById('search').value.trim().toLowerCase();
 
+      let rows = [...allRows];
       if (currentFilter !== 'all') rows = rows.filter(r => r.option === currentFilter);
       if (query) rows = rows.filter(r => r.name.toLowerCase().includes(query));
 
       tbody.innerHTML = '';
-
-      if (!rows.length) {
-        empty.style.display = 'block';
-        return;
-      }
+      if (!rows.length) { empty.style.display = 'block'; return; }
       empty.style.display = 'none';
 
-      rows.slice().reverse().forEach((r, i) => {
-        const tr = document.createElement('tr');
+      rows.forEach((r, i) => {
         const date = r.timestamp ? new Date(r.timestamp) : null;
         const dateStr = date
           ? date.toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' })
             + ' · ' + date.toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' })
           : '—';
-
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="color:var(--brown-soft); font-size:12px;">${rows.length - i}</td>
+          <td style="color:var(--brown-soft);font-size:12px;">${i + 1}</td>
           <td><span class="guest-name">${escHtml(r.name)}</span></td>
           <td>
             <span class="badge badge-${r.option}">
@@ -448,19 +487,10 @@
       });
     }
 
-    function deleteEntry(id) {
-      if (!confirm('¿Eliminar esta respuesta?')) return;
-      const updated = getResponses().filter(r => r.id !== id);
-      saveResponses(updated);
-      renderStats();
-      renderTable();
-    }
-
     function exportCSV() {
-      const rows = getResponses();
-      if (!rows.length) { alert('No hay respuestas para exportar.'); return; }
+      if (!allRows.length) { alert('No hay respuestas para exportar.'); return; }
       const header = ['Nombre', 'Respuesta', 'Fecha'];
-      const lines  = rows.map(r => {
+      const lines  = allRows.map(r => {
         const date = r.timestamp ? new Date(r.timestamp).toLocaleString('es-CO') : '';
         return [r.name, r.option === 'si' ? 'Confirmado' : 'No asiste', date]
           .map(v => `"${v}"`).join(',');
@@ -477,8 +507,9 @@
       return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    renderStats();
-    renderTable();
+    // ── Init + auto-refresh every 30 s ───────────────────────────────
+    loadData();
+    setInterval(loadData, 30000);
   </script>
 </body>
 </html>

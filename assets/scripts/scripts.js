@@ -1,3 +1,25 @@
+// ── Supabase config ───────────────────────────────────────────────
+const SUPABASE_URL  = 'https://jczhsfcowjpfzonpkufz.supabase.co';   // e.g. https://xxxx.supabase.co
+const SUPABASE_KEY  = 'sb_publishable_DsLjXVM_ZqOxYVeVqI4X6A_U-QTgHof';
+const TABLE         = 'rsvp_responses';
+
+async function supabaseInsert(row) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
+    method:  'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer':        'return=minimal',
+    },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // ── Music Player ─────────────────────────────────────────────────
@@ -74,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(tick, 1000);
 
   // ── RSVP form ────────────────────────────────────────────────────
-  const STORAGE_KEY = 'rsvp_responses';
   let selectedOption = null;
 
   window.selectOption = function(val) {
@@ -83,29 +104,39 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-no').classList.toggle('selected', val === 'no');
   };
 
-  window.guardarRespuesta = function() {
+  window.guardarRespuesta = async function() {
     const nombre = document.getElementById('guestName').value.trim();
-    if (!nombre) {
-      shakeInput('guestName');
-      return;
-    }
-    if (!selectedOption) {
-      shakeInput('btn-si');
+    if (!nombre)        { shakeInput('guestName'); return; }
+    if (!selectedOption){ shakeInput('btn-si');    return; }
+
+    // Disable button while saving
+    const saveBtn = document.querySelector('.save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando...';
+
+    try {
+      const row = {
+        id:        Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        name:      nombre,
+        option:    selectedOption,
+        timestamp: new Date().toISOString(),
+      };
+
+      await supabaseInsert(row);
+      openModal(nombre, selectedOption);
+    } catch (err) {
+      console.error('Error saving RSVP:', err);
+      // Friendly fallback message
+      saveBtn.textContent = '¡Ocurrió un error! Intenta de nuevo.';
+      setTimeout(() => {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Guardamos tu respuesta.';
+      }, 3000);
       return;
     }
 
-    // ── Save to localStorage ──────────────────────────────────────
-    const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    existing.push({
-      id:        Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      name:      nombre,
-      option:    selectedOption,
-      timestamp: new Date().toISOString(),
-    });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-    // ─────────────────────────────────────────────────────────────
-
-    openModal(nombre, selectedOption);
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Guardamos tu respuesta.';
   };
 
   function shakeInput(id) {
@@ -152,8 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.closeModal = function() {
-    const backdrop = document.getElementById('confirmModal');
-    backdrop.classList.remove('open');
+    document.getElementById('confirmModal').classList.remove('open');
     document.body.style.overflow = '';
   };
 
@@ -182,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       container.appendChild(dot);
     }
-
     if (!document.getElementById('confetti-style')) {
       const s = document.createElement('style');
       s.id = 'confetti-style';
@@ -200,10 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
     });
   }, { threshold: 0.12 });
   revealEls.forEach(el => io.observe(el));
